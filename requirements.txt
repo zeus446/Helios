@@ -1,0 +1,8 @@
+fastapi[all]
+passlib[bcrypt]
+PyPDF2
+python-dotenv
+alembic
+sqlalchemy
+python-jose
+openai
