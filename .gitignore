@@ -1,25 +1,52 @@
-# Virtual Environments
+# ==========================================
+# 1. Virtual Environments (Strict Matches)
+# ==========================================
 venv/
 .venv/
 env/
 ENV/
+env.bak/
+venv.bak/
 
-# Python caching
+# ==========================================
+# 2. Environment Variables & Secret Files
+# ==========================================
+.env
+.env.*
+*.env
+config.env
+secrets.json
+
+# Keep an example file visible if you want to share structural keys
+!.env.example
+
+# ==========================================
+# 3. Python Caching & Compiled Files
+# ==========================================
 **/__pycache__/
 *.py[cod]
 *$py.class
+*.so
+.pytest_cache/
+.coverage
+htmlcov/
 
-# Environment variables & secrets
-.env
-.env.*
-!.env.example
-
-# IDEs and Editors (Optional but highly recommended)
+# ==========================================
+# 4. IDEs, Editors & Project Metadata
+# ==========================================
 .vscode/
 .idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
 *.swp
-*.swo
 
-# Operating System files
+# ==========================================
+# 5. OS Metadata & Temporary Files
+# ==========================================
 Thumbs.db
+ehthumbs.db
 Desktop.ini
+$RECYCLE.BIN/
+.DS_Store

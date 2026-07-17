@@ -1,13 +1,19 @@
 from fastapi import FastAPI
-from app.api.routes import auth, users, resume as resume_routes
+from api.routes import users,auth,resume
 from app.database import engine, Base
-from app.models import user, resume as resume_models
+from models import user
 import logging
+
+from models import resume as resume_models
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-app = FastAPI(title = "HELIOS",version = "0.1.0" )
+app = FastAPI(
+    title="HELIOS",
+    version="0.1.0",
+    swagger_ui_parameters={"persistAuthorization": True},
+)
 
 
 
@@ -22,9 +28,9 @@ async def startup():
     except Exception as e:
         logger.error(f"Startup error: {e}", exc_info=True)
 
-app.include_router(auth.router)
 app.include_router(users.router)
-app.include_router(resume_routes.router)
+app.include_router(auth.router)
+app.include_router(resume.router)
 
 
 @app.get("/")
