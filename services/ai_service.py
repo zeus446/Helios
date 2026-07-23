@@ -3,6 +3,7 @@ import logging
 from typing import Union
 from openai import AsyncOpenAI  # Use the async client
 from app.config import settings
+from models.resume import Master_resume_DB
 
 
 # Set up basic logging
@@ -54,14 +55,11 @@ async def parse_resume_to_structured(raw_input: str) -> dict:
 
     try:
         response = await client.chat.completions.create(
-            model="meta-llama/llama-3.2-3b-instruct:free",
+            model="openrouter/free",
             messages=[{"role": "user", "content": prompt}],
             temperature=0.0,
         )
-
-        print("STATUS:", response)
-        print("CONTENT:", response.choices[0].message.content)
-
+        
         content = response.choices[0].message.content
         parsed = clean_json_response(content)
         if not isinstance(parsed, dict):
@@ -107,7 +105,7 @@ async def analyze_job_description(job_description: str) -> str:
 
     try:
         response = await client.chat.completions.create(
-            model="meta-llama/llama-3.2-3b-instruct:free",
+            model="openrouter/free",
             messages=[{"role": "user", "content": prompt}],
             temperature=0.0   
         )
@@ -133,35 +131,37 @@ async def tailor_resume(master_resume: dict, job_analysis: dict, job_description
 
     CRITICAL RULE: Do NOT invent or hallucinate any new job titles, companies, certifications, or experiences. You may only rephrase, reword, and reorder the existing information to highlight relevant skills and match the job's keywords.
 
-    Return ONLY valid JSON. Do not include any introductory or concluding text.
+    Return ONLY valid JSON. Do not include any introductory or concluding text, and do not wrap the JSON in markdown code blocks.
     
-    The JSON must contain EXACTLY these top-level keys:
+    The JSON structure must contain EXACTLY these top-level keys:
     - "tailored_summary": string (a compelling 3-4 sentence professional summary positioned for this specific role)
-    - "experiences": list of dicts (must keep the original company, title, and dates, but rewrite the bullet points/responsibilities to use ATS keywords and emphasize metrics relevant to the job)
-    - "projects": list of dicts (must keep original names, but rewrite descriptions to highlight technologies and outcomes requested in the job description)
-    - "optimized_skills": list of strings (a curated list of the user's existing skills, reordered so that the skills most critical to the job description appear first)
-    - "certifications": list of strings (the user's existing certifications, reordered by relevance to the target job description)
-    - "achievements": list of strings (the user's existing achievements, slightly rephrased if necessary to highlight metrics or outcomes that echo the priorities of the job description)
-    - "tailoring_strategies": list of strings (a quick bulleted summary explaining *why* you made these changes, so the user understands the strategy)
-    - "DROP any experience that has zero relevant responsibilities rather than keeping it empty"
-    - "REMOVE skills that are clearly irrelevant to the role" (non-technical, unrelated industry terms)
-    - "If a bullet point cannot be meaningfully connected to the job description, rewrite it to emphasize transferable skills  or drop it entirely"
-    - "Keep the optimized_skills list to maximum 15 most relevant skills"
-    
+    - "experiences": list of dicts (must keep the original company, title, and dates, but rewrite the bullet points/responsibilities to use ATS keywords)
+    - "projects": list of dicts (must keep original names, but rewrite descriptions to highlight relevant technologies)
+    - "optimized_skills": list of strings (a curated list of the user's existing skills, maximum 15 items, ordered by relevance)
+    - "certifications": list of strings (the user's existing certifications, reordered by relevance)
+    - "achievements": list of strings (the user's existing achievements, rephrased to highlight matching metrics)
+    - "tailoring_strategies": list of strings (a summary explaining the strategic changes made)
+
+    STRATEGY RULES:
+    1. DROP any experience from the "experiences" list that has zero relevant responsibilities rather than keeping it empty.
+    2. REMOVE skills from "optimized_skills" that are clearly irrelevant to the target role.
+    3. If an experience bullet point cannot be meaningfully connected to the job description, rewrite it to emphasize transferable skills or drop it entirely.
 
     Original Resume:
     {master_resume_str}
-
     
     Target Job Description:
     {job_analysis_str}
     """
     try:
+        print("MASTER STRUCTURED DATA:", Master_resume_DB.structured_data)
         response = await client.chat.completions.create(
-               model="meta-llama/llama-3.2-3b-instruct:free",
+               model="openrouter/free",
             messages=[{"role": "user", "content": prompt}],
             temperature=0.0   
         )
+        content = response.choices[0].message.content
+        print("TAILOR RAW RESPONSE:", content[:1000])
 
         content = response.choices[0].message.content
         parsed = clean_json_response(content)

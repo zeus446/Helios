@@ -1,21 +1,11 @@
 from datetime import datetime
-from pydantic import BaseModel, Field
-from typing import List, Optional
-from sqlalchemy import Column, Integer, Text, JSON, DateTime
+from pydantic import BaseModel, ConfigDict, Field
+from typing import Any, Dict, List, Optional
+from sqlalchemy import Column, ForeignKey, Integer, String, Text, JSON, DateTime, func
 from sqlalchemy.orm import declarative_base
 
 Base = declarative_base()
 
-# =====================================================================
-# 1. THE DATABASE MODEL (SQLAlchemy)
-# =====================================================================
-class Master_resume_DB(Base):
-    __tablename__ = "master_resumes"
-
-    user_id = Column(Integer, primary_key=True, index=True)
-    raw_text = Column(Text, nullable=False)
-    structured_data = Column(JSON, nullable=False) 
-    created_at = Column(DateTime, default=datetime.utcnow)
 
 # =====================================================================
 # 2. THE AI PARSING SUB-SCHEMAS (Pydantic - Made Highly Defensive)
@@ -79,3 +69,24 @@ class structure_resume(BaseModel):
     Acheivements: List[acheivements] = Field(default_factory=list)
     certificates: List[certifications] = Field(default_factory=list)
     Volunteering: Optional[volunteering] = None
+
+
+
+
+class TailorRequest(BaseModel):
+    job_description: str
+    job_title: str
+
+
+class TailoredResumeResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    
+    id: int
+    user_id: int
+    master_resume_id: int
+    job_title: Optional[str] = None
+    company_name: Optional[str] = None
+    tailored_content: dict
+    tailoring_notes: dict
+    ats_score: Optional[int] = None
+    created_at: datetime

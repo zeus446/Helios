@@ -33,7 +33,7 @@ def verify_access_token(token: str, credentials_exception: HTTPException) -> Tok
         # 🔍 Look at your terminal console when you hit Execute!
         print(f"👉 YOUR ACTUALLY RECEIVED JWT PAYLOAD IS: {payload}")
         
-        user_id = payload.get("id")
+        user_id = payload.get("user_id")
 
         if user_id is None:
             raise credentials_exception
