@@ -134,13 +134,16 @@ async def tailor_resume(master_resume: dict, job_analysis: dict, job_description
     Return ONLY valid JSON. Do not include any introductory or concluding text, and do not wrap the JSON in markdown code blocks.
     
     The JSON structure must contain EXACTLY these top-level keys:
+    - "personal_details":list of dicts(must keep the original name,phonenumber,linked in url,github url,and ayother relavant protfolio urls provided)
     - "tailored_summary": string (a compelling 3-4 sentence professional summary positioned for this specific role)
+    - "Education":list of dicts(must keep original name of educational institution,dates,rewrite any relavant bullet points responsibilities subject to ats keywords)
     - "experiences": list of dicts (must keep the original company, title, and dates, but rewrite the bullet points/responsibilities to use ATS keywords)
-    - "projects": list of dicts (must keep original names, but rewrite descriptions to highlight relevant technologies)
+    - "projects": list of dicts (must keep original names, but rewrite descriptions to highlight relevant technologies,include urls of the projects if provided by the user as proof)
     - "optimized_skills": list of strings (a curated list of the user's existing skills, maximum 15 items, ordered by relevance)
     - "certifications": list of strings (the user's existing certifications, reordered by relevance)
     - "achievements": list of strings (the user's existing achievements, rephrased to highlight matching metrics)
-    - "tailoring_strategies": list of strings (a summary explaining the strategic changes made)
+    - "publications": list of strings (the user's publications such as patents,research papers ordered by relavance, must keep the original names, rewrite any relavant bullet points included about the publication invloving the publication, contribution etc)
+    - "volunteering": list of strings (the users exsisting volunteering experiences with added relavant bullet points for crisp context)
 
     STRATEGY RULES:
     1. DROP any experience from the "experiences" list that has zero relevant responsibilities rather than keeping it empty.
@@ -170,13 +173,16 @@ async def tailor_resume(master_resume: dict, job_analysis: dict, job_description
             return {}
         
         return {
+    "personal_information":parsed.get("personal_details",[]),
     "tailored_summary": parsed.get("tailored_summary", ""),
+    "education":parsed.get("Education",[]),
     "experiences": parsed.get("experiences", []),
     "projects": parsed.get("projects", []),
     "optimized_skills": parsed.get("optimized_skills", []),
     "certifications": parsed.get("certifications", []),
     "achievements": parsed.get("achievements", []),
-    "tailoring_strategies": parsed.get("tailoring_strategies", []),
+    "publication":parsed.get("publications",[]),
+    "volunteering":parsed.get("volunteering",[]),
 }
         
     except Exception as e:

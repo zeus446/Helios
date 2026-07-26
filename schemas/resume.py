@@ -2,9 +2,8 @@ from datetime import datetime
 from pydantic import BaseModel, ConfigDict, Field
 from typing import Any, Dict, List, Optional
 from sqlalchemy import Column, ForeignKey, Integer, String, Text, JSON, DateTime, func
-from sqlalchemy.orm import declarative_base
+from app.database import Base
 
-Base = declarative_base()
 
 
 # =====================================================================
