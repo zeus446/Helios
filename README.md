@@ -224,7 +224,7 @@ ADZUNA_APP_KEY=your_adzuna_app_key
 - [x] Resume upload and parsing
 - [x] Resume tailoring with AI
 - [x] JWT Authentication
-- [ ] User preferences
+- [x] User preferences
 - [ ] Job discovery via Adzuna
 - [ ] AI match scoring
 - [ ] Company intelligence
