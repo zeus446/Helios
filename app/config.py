@@ -3,6 +3,7 @@ from pydantic_settings import BaseSettings
 class Settings(BaseSettings):
     DATABASE_URL: str
     OPENROUTER_API_KEY: str
+    JSEARCH_API_KEY:str
     BASE_URL: str
     SECRET_KEY: str
     ALGORITHM: str = "HS256"
