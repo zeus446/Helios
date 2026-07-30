@@ -5,7 +5,7 @@ class UserPreferences(Base):
     __tablename__ = "preferences"
 
     id = Column(Integer,nullable=False,primary_key=True)
-    user_id = Column(Integer,ForeignKey("users.id"),nullable=False)
+    user_id = Column(Integer,ForeignKey("users.id",ondelete="CASCADE"),nullable=False,unique=True)
     job_title = Column(String, nullable=False)
     location = Column(String,nullable=False)
     remote_only=  Column(Boolean,default=False)
